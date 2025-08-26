@@ -116,7 +116,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen bg-gray-50 flex flex-row relative">
       {/* Sidebar */}
       <div className="overflow-x-hidden fixed left-0 top-0 bottom-0 z-50 w-72 h-screen bg-white shadow-lg hidden lg:flex lg:flex-col lg:flex-shrink-0">
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b">
             <div className="flex items-center space-x-2">
@@ -183,7 +183,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </nav>
 
           {/* User info */}
-          <div className="border-t px-4 py-4 ">
+          <div className="border-t px-4 py-4">
             <div className="flex items-center space-x-3">
               <Avatar className="w-8 h-8">
                 <AvatarImage src="" />
@@ -283,7 +283,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   </nav>
 
                   {/* User info */}
-                  <div className="border-t px-4 py-4 ">
+                  <div className="border-t px-4 py-4">
                     <div className="flex items-center space-x-3">
                       <Avatar className="w-8 h-8">
                         <AvatarImage src="" />
