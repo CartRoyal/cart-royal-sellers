@@ -14,6 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Sheet,
+  SheetContent,
+  SheetClose,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   LayoutDashboard,
   Package,
   Plus,
@@ -78,7 +84,7 @@ const navigation = [
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [seller, setSeller] = useState<any>(null);
 
   useEffect(() => {
@@ -108,22 +114,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-row relative">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
       {/* Sidebar */}
-      <div
-        className={cn(
-          "relative z-50 w-64 h-screen bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:sticky lg:top-0",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <div className="flex flex-col overflow-y-auto fixed inset-y-0 left-0 top-0 bottom-0 w-full">
+      <div className="overflow-x-hidden fixed left-0 top-0 bottom-0 z-50 w-72 h-screen bg-white shadow-lg hidden lg:flex lg:flex-col lg:flex-shrink-0">
+        <div className="flex flex-col w-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b">
             <div className="flex items-center space-x-2">
@@ -134,14 +127,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Cart Royal
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="w-5 h-5" />
-            </Button>
           </div>
 
           {/* Store Info */}
@@ -182,7 +167,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
-                  onClick={() => setSidebarOpen(false)}
                 >
                   <item.icon
                     className={cn(
@@ -219,17 +203,106 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="relative flex flex-1 flex-col">
+      <div className="relative flex flex-1 flex-col lg:pl-72">
         {/* Top bar */}
         <div className="sticky top-0 z-30 flex h-16 w-full items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
+          {/* Mobile menu */}
+          <div className="lg:hidden">
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72 p-0">
+                <div className="flex flex-col w-full h-full">
+                  {/* Logo */}
+                  <div className="flex items-center justify-between h-16 px-6 border-b">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <ShoppingBag className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-xl font-bold text-gray-900">
+                        Cart Royal
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Store Info */}
+                  {seller && (
+                    <div className="px-6 py-4 border-b bg-gray-50">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src={seller.storeLogoUrl} />
+                          <AvatarFallback>
+                            <Store className="w-5 h-5" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {seller.storeName}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {seller.isVerified
+                              ? "Verified Seller"
+                              : "Pending Verification"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Navigation */}
+                  <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+                    {navigation.map((item) => {
+                      const isActive = isCurrentPath(item.href);
+                      return (
+                        <SheetClose asChild key={item.name}>
+                          <Link
+                            href={item.href}
+                            className={cn(
+                              "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                              isActive
+                                ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            )}
+                          >
+                            <item.icon
+                              className={cn(
+                                "mr-3 h-5 w-5 flex-shrink-0",
+                                isActive
+                                  ? "text-blue-700"
+                                  : "text-gray-400 group-hover:text-gray-500"
+                              )}
+                            />
+                            {item.name}
+                          </Link>
+                        </SheetClose>
+                      );
+                    })}
+                  </nav>
+
+                  {/* User info */}
+                  <div className="border-t px-4 py-4 ">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src="" />
+                        <AvatarFallback>
+                          {seller?.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {seller?.email}
+                        </p>
+                        <p className="text-xs text-gray-500">Seller Account</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
 
           {/* Separator */}
           <div className="h-6 w-px bg-gray-200 lg:hidden" />
