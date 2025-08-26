@@ -102,6 +102,7 @@ export default function SettingsPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   const {
     register: registerAccount,
@@ -657,7 +658,12 @@ export default function SettingsPage() {
               </div>
               <Dialog
                 open={deleteDialogOpen}
-                onOpenChange={setDeleteDialogOpen}
+                onOpenChange={(open) => {
+                  setDeleteDialogOpen(open);
+                  if (!open) {
+                    setDeleteConfirmation(""); // Reset on close
+                  }
+                }}
               >
                 <DialogTrigger asChild>
                   <Button
@@ -686,6 +692,8 @@ export default function SettingsPage() {
                       Type <strong>DELETE</strong> to confirm.
                     </p>
                     <Input
+                      value={deleteConfirmation}
+                      onChange={(e) => setDeleteConfirmation(e.target.value)}
                       placeholder="Type DELETE to confirm"
                       className="mt-2"
                       id="delete-confirmation"
@@ -694,20 +702,17 @@ export default function SettingsPage() {
                   <DialogFooter>
                     <Button
                       variant="outline"
-                      onClick={() => setDeleteDialogOpen(false)}
+                      onClick={() => {
+                        setDeleteDialogOpen(false);
+                        setDeleteConfirmation("");
+                      }}
                     >
                       Cancel
                     </Button>
                     <Button
                       variant="destructive"
                       onClick={handleDeleteAccount}
-                      disabled={
-                        (
-                          document.getElementById(
-                            "delete-confirmation"
-                          ) as HTMLInputElement
-                        )?.value !== "DELETE"
-                      }
+                      disabled={deleteConfirmation !== "DELETE"}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete Account
