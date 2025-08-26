@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import {
@@ -133,7 +133,7 @@ const renderStars = (rating: number) => {
 
 export default function ProductDetailsPage() {
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = useParams();
   const [product, setProduct] = useState(mockProduct);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -230,7 +230,7 @@ export default function ProductDetailsPage() {
                         }}
                       />
                     ) : null}
-                    <div className="hidden flex items-center justify-center h-full">
+                    <div className="flex items-center justify-center h-full">
                       <ImageIcon className="w-16 h-16 text-gray-400" />
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function ProductDetailsPage() {
                               );
                             }}
                           />
-                          <div className="hidden flex items-center justify-center h-full">
+                          <div className="flex items-center justify-center h-full">
                             <ImageIcon className="w-6 h-6 text-gray-400" />
                           </div>
                         </button>
